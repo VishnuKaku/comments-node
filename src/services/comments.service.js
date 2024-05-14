@@ -1,4 +1,4 @@
-import Comment from '../models/comment.js';
+import Comment from '../models/comments.model.js';
 
 // Create a comment
 const createComment = async (commentData) => {
@@ -22,18 +22,22 @@ const getAllComments = async () => {
 };
 
 // Get a specific comment by ID
-const getCommentById = async (commentId) => {
+const getCommenterByCommenterId = async (commenterId) => {
   try {
-    const comment = await Comment.findById(commentId)
-      .populate('commenter')
-      .populate('suggestion'); 
+      const commenter = await Comment.findOne({commenter: commenterId})
+      return commenter;
+  } catch (error) {
+      throw new Error('Failed to fetch commenter by commenter ID');
+  }
+};
 
-    if (!comment) {
-      throw new Error('Comment not found');
-    }
-    return comment;
-  } catch (err) {
-    throw new Error(`Error fetching comment with ID ${commentId}: ${err.message}`);
+const getSuggestionBySuggestionId = async (suggestionId) => {
+  try {
+    console.log(suggestionId)
+      const suggestion = await Comment.findOne({suggestion: suggestionId})
+      return suggestion;
+  } catch (error) {
+      throw new Error('Failed to fetch suggestion by suggestion ID');
   }
 };
 
@@ -46,9 +50,12 @@ const deleteComment = async (commentId) => {
   }
 };
 
-export {
+const commentService =  {
   createComment,
   getAllComments,
-  getCommentById,
+  getCommenterByCommenterId,
+  getSuggestionBySuggestionId,
   deleteComment,
 };
+
+export default commentService;
